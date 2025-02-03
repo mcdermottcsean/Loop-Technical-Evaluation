@@ -1,8 +1,9 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 import dotenv from 'dotenv';
 dotenv.config();
-const username = process.env.USERNAME;
-const password = process.env.PASSWORD;
+const url:string = process.env.URL!;
+const username:string = process.env.USERNAME!;
+const password:string = process.env.PASSWORD!;
 
 export class DemoApp {
     readonly page: Page;
@@ -30,19 +31,11 @@ export class DemoApp {
 
     }
 
-    /* 
-    Test planning
-
-    1 method to verify which column by text
-    1 method to confirm tags
-
-    */
-
     /**
      * Logs the user into the Demo App
      */
     async login() {
-        await this.page.goto('');
+        await this.page.goto(url);
         await this.textboxUserName.fill(username);
         await this.textboxPassword.fill(password);
         await this.buttonSignIn.click();
@@ -52,7 +45,7 @@ export class DemoApp {
     /**
      * Chooses a scrum based off the passed string
      * 
-     * @param scrum String
+     * @param scrum String - Specific scrum (Web Application, Mobile Application, Marketing Campaign)
      */
     async navigateToPage(scrum: string) {
         switch(scrum) {
@@ -73,8 +66,8 @@ export class DemoApp {
     /**
      * Verifies a ticket is in a column
      * 
-     * @param ticket String ticket name
-     * @param column String column name
+     * @param ticket String - Ticket name
+     * @param column String - Column name
      */
     async confirmColumn(ticket: string, columnTitle: string) {
         const column = this.page.locator('h2:has-text("' + columnTitle + '")').locator('..');
@@ -82,6 +75,12 @@ export class DemoApp {
         console.log(ticket + ' ticket is in column: ' + columnTitle);
     }
 
+    /**
+     * Verifies that a ticket has the specified tags
+     * 
+     * @param ticket String - Ticket name
+     * @param tags String[] - List of tags on a given ticket
+     */
     async verifyTags(ticket: string, tags: string[]) {
         const ticketCard = this.page.locator('text="' +  ticket + '"').locator('..');
 
