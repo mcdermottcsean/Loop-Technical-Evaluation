@@ -1,9 +1,35 @@
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
+import { DemoApp } from '../pages/demoapp';
+import fs from 'fs';
 
-test('login automation', async ({ page }) => {
-    await page.goto('https://animated-gingersnap-8cf7f2.netlify.app/');
+// Read the JSON file containing test cases
+const testCases: Record<string, TestCase> = JSON.parse(fs.readFileSync('./tests/test_cases.json', 'utf8'));
+
+test.describe.configure({ mode: 'serial' });
+
+for (const [key, testCase] of Object.entries(testCases)) {
+  test(`${key} - Data Driven Test using JSON file`, async ({ page }) => {
     
-    await page.getByRole('textbox', { name: 'Username' }).fill('admin');
+    // Initialize demo app object
+    const demoApp = new DemoApp(page);
 
-    await page.getByRole('textbox', { name: 'Password' }).fill('password123');
+    // Log into demo app
+    await demoApp.login();
+    
+    // Navigate to the application based on the test case data
+    await demoApp.navigateToPage(testCase.Application);
+    
+    // Confirm column and verify the ticket details based on the test case
+    await demoApp.confirmColumn(testCase.Ticket, testCase.Column);
+
+    // Verify that the expected tags are included
+    await demoApp.verifyTags(testCase.Ticket, testCase.Tags);
   });
+}
+
+interface TestCase {
+  Application: string;
+  Ticket: string;
+  Column: string;
+  Tags: string[];
+}
