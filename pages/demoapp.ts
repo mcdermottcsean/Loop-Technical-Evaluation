@@ -2,7 +2,7 @@ import { expect, type Locator, type Page } from '@playwright/test';
 import dotenv from 'dotenv';
 dotenv.config();
 const url:string = process.env.URL!;
-const username:string = process.env.USERNAME!;
+const username:string = process.env.USER_NAME!;
 const password:string = process.env.PASSWORD!;
 
 export class DemoApp {
@@ -39,6 +39,7 @@ export class DemoApp {
         await this.textboxUserName.fill(username);
         await this.textboxPassword.fill(password);
         await this.buttonSignIn.click();
+        await expect(this.headerApplication).toBeVisible();
         console.log('Log in complete');
     }
 
