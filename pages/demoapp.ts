@@ -1,7 +1,7 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 import dotenv from 'dotenv';
 dotenv.config();
-const username = process.env.USER_NAME;
+const username = process.env.USERNAME;
 const password = process.env.PASSWORD;
 
 export class DemoApp {
