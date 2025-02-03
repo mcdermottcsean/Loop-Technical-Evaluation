@@ -2,12 +2,13 @@ import { test } from '@playwright/test';
 import { DemoApp } from '../pages/demoapp';
 import fs from 'fs';
 
-// Read the JSON file containing test cases
-const testCases: Record<string, TestCase> = JSON.parse(fs.readFileSync('./tests/test_cases.json', 'utf8'));
-
 test.describe.configure({ mode: 'serial' });
 
+// Read the JSON file containing test cases
+const testCases: Record<string, TestCase> = JSON.parse(fs.readFileSync('./tests/test_cases.json', 'utf8'));
 for (const [key, testCase] of Object.entries(testCases)) {
+
+  // Test that login works, tickets are in their expected column, and tickets include expected tags
   test(`${key} - Data Driven Test using JSON file`, async ({ page }) => {
     
     // Initialize demo app object
